@@ -66,7 +66,7 @@ func (r *TodoListPostgres) Delete(userId, listId int) error {
 	return err
 }
 
-func (r *TodoListPostgres) Update(userId, listId int, input eduProject.UpdateListItem) error {
+func (r *TodoListPostgres) Update(userId, listId int, input eduProject.UpdateListInput) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1

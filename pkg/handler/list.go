@@ -77,7 +77,7 @@ func (h *Handler) updateList(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, "invalid id parameter")
 		return
 	}
-	var input eduProject.UpdateListItem
+	var input eduProject.UpdateListInput
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
