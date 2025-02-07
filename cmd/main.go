@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"eduProject"
 	"eduProject/pkg/handler"
 	"eduProject/pkg/repository"
@@ -10,6 +11,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
@@ -41,8 +44,24 @@ func main() {
 
 	srv := new(eduProject.Server)
 
-	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-		logrus.Fatalf("eduProject.Server.Run: %v", err)
+	go func() {
+		if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+			logrus.Fatalf("eduProject.Server.Run: %v", err)
+		}
+	}()
+	logrus.Info("Server started")
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	logrus.Info("Shutdown Server ...")
+
+	if err := srv.Shutdown(context.Background()); err != nil {
+		logrus.Errorf("eduProject.Server.Shutdown: %v", err)
+	}
+
+	if err := db.Close(); err != nil {
+
 	}
 }
 
