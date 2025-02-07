@@ -7,6 +7,17 @@ import (
 	"strconv"
 )
 
+// @Summary      Создать задачу
+// @Description  Добавляет новую задачу в список задач
+// @Tags         items
+// @Accept       json
+// @Produce      json
+// @Param        id     path      int                 true  "ID списка задач"
+// @Param        input  body      eduProject.TodoItem true  "Данные задачи"
+// @Success      201    {object}  map[string]int      "ID созданной задачи"
+// @Failure      400    {object}  errorResponse       "Неправильный запрос"
+// @Failure      500    {object}  errorResponse       "Ошибка сервера"
+// @Router       /api/lists/{id}/items [post]
 func (h *Handler) createItem(c *gin.Context) {
 	userId, err := ConvertUserId(c)
 	if err != nil {
@@ -33,6 +44,16 @@ func (h *Handler) createItem(c *gin.Context) {
 	})
 }
 
+// @Summary      Получить все задачи
+// @Description  Возвращает список всех задач в указанном списке
+// @Tags         items
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int                    true  "ID списка задач"
+// @Success      200  {array}   eduProject.TodoItem    "Список задач"
+// @Failure      400  {object}  errorResponse          "Неправильный запрос"
+// @Failure      500  {object}  errorResponse          "Ошибка сервера"
+// @Router       /api/lists/{id}/items [get]
 func (h *Handler) getAllItems(c *gin.Context) {
 	userId, err := ConvertUserId(c)
 	if err != nil {
@@ -54,6 +75,16 @@ func (h *Handler) getAllItems(c *gin.Context) {
 	c.JSON(http.StatusOK, items)
 }
 
+// @Summary      Получить задачу по ID
+// @Description  Возвращает одну задачу по её ID
+// @Tags         items
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int                   true  "ID задачи"
+// @Success      200  {object}  eduProject.TodoItem   "Задача"
+// @Failure      400  {object}  errorResponse         "Неправильный запрос"
+// @Failure      500  {object}  errorResponse         "Ошибка сервера"
+// @Router       /api/items/{id} [get]
 func (h *Handler) getItemById(c *gin.Context) {
 	userId, err := ConvertUserId(c)
 	if err != nil {
@@ -75,6 +106,17 @@ func (h *Handler) getItemById(c *gin.Context) {
 	c.JSON(http.StatusOK, item)
 }
 
+// @Summary      Обновить задачу
+// @Description  Обновляет данные задачи по её ID
+// @Tags         items
+// @Accept       json
+// @Produce      json
+// @Param        id     path      int                        true  "ID задачи"
+// @Param        input  body      eduProject.UpdateItemInput true  "Обновленные данные"
+// @Success      200    {object}  statusResponse             "Статус обновления"
+// @Failure      400    {object}  errorResponse              "Неправильный запрос"
+// @Failure      500    {object}  errorResponse              "Ошибка сервера"
+// @Router       /api/items/{id} [put]
 func (h *Handler) updateItem(c *gin.Context) {
 	userId, err := ConvertUserId(c)
 	if err != nil {
@@ -99,6 +141,16 @@ func (h *Handler) updateItem(c *gin.Context) {
 	c.JSON(http.StatusOK, statusResponse{"success update item"})
 }
 
+// @Summary      Удалить задачу
+// @Description  Удаляет задачу по её ID
+// @Tags         items
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int              true  "ID задачи"
+// @Success      200  {object}  statusResponse   "Статус удаления"
+// @Failure      400  {object}  errorResponse    "Неправильный запрос"
+// @Failure      500  {object}  errorResponse    "Ошибка сервера"
+// @Router       /api/items/{id} [delete]
 func (h *Handler) deleteItem(c *gin.Context) {
 	userId, err := ConvertUserId(c)
 	if err != nil {

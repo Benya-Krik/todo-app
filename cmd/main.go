@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"eduProject"
+	_ "eduProject/docs"
 	"eduProject/pkg/handler"
 	"eduProject/pkg/repository"
 	"eduProject/pkg/service"

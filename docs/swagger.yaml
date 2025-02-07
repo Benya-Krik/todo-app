@@ -1,0 +1,442 @@
+definitions:
+  eduProject.TodoItem:
+    properties:
+      description:
+        type: string
+      done:
+        type: boolean
+      id:
+        type: integer
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  eduProject.TodoList:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  eduProject.UpdateItemInput:
+    properties:
+      description:
+        type: string
+      done:
+        type: boolean
+      title:
+        type: string
+    type: object
+  eduProject.UpdateListInput:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+  eduProject.User:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - name
+    - password
+    - username
+    type: object
+  handler.GetAllListsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/eduProject.TodoList'
+        type: array
+    type: object
+  handler.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  handler.signInInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  handler.statusResponse:
+    properties:
+      status:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/items/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет задачу по её ID
+      parameters:
+      - description: ID задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Статус удаления
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "400":
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Удалить задачу
+      tags:
+      - items
+    get:
+      consumes:
+      - application/json
+      description: Возвращает одну задачу по её ID
+      parameters:
+      - description: ID задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Задача
+          schema:
+            $ref: '#/definitions/eduProject.TodoItem'
+        "400":
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Получить задачу по ID
+      tags:
+      - items
+    put:
+      consumes:
+      - application/json
+      description: Обновляет данные задачи по её ID
+      parameters:
+      - description: ID задачи
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Обновленные данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/eduProject.UpdateItemInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Статус обновления
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "400":
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Обновить задачу
+      tags:
+      - items
+  /api/lists:
+    get:
+      description: Возвращает все списки задач пользователя
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список задач
+          schema:
+            $ref: '#/definitions/handler.GetAllListsResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Получить все списки задач
+      tags:
+      - lists
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новый список задач в систему
+      parameters:
+      - description: Данные списка задач
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/eduProject.TodoList'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: ID созданного списка
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Создать список задач
+      tags:
+      - lists
+  /api/lists/{id}:
+    delete:
+      description: Удаляет список задач по ID
+      parameters:
+      - description: ID списка
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Успешное удаление
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "400":
+          description: Неверный ID
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Удалить список задач
+      tags:
+      - lists
+    get:
+      description: Возвращает список задач по его ID
+      parameters:
+      - description: ID списка
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список задач
+          schema:
+            $ref: '#/definitions/eduProject.TodoList'
+        "400":
+          description: Неверный ID
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Получить список задач по ID
+      tags:
+      - lists
+    put:
+      consumes:
+      - application/json
+      description: Изменяет название или описание списка задач
+      parameters:
+      - description: ID списка
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Обновленные данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/eduProject.UpdateListInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "400":
+          description: Неверный ID или данные
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Обновить список задач
+      tags:
+      - lists
+  /api/lists/{id}/items:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список всех задач в указанном списке
+      parameters:
+      - description: ID списка задач
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список задач
+          schema:
+            items:
+              $ref: '#/definitions/eduProject.TodoItem'
+            type: array
+        "400":
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Получить все задачи
+      tags:
+      - items
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новую задачу в список задач
+      parameters:
+      - description: ID списка задач
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Данные задачи
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/eduProject.TodoItem'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: ID созданной задачи
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Создать задачу
+      tags:
+      - items
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Авторизует пользователя и возвращает токен
+      parameters:
+      - description: Данные для входа
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.signInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Токен авторизации
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Авторизация
+      tags:
+      - auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Создает нового пользователя в системе
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/eduProject.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: ID созданного пользователя
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Неправильный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Регистрация
+      tags:
+      - auth
+swagger: "2.0"

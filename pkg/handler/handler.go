@@ -3,6 +3,8 @@ package handler
 import (
 	"eduProject/pkg/service"
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 )
 
 type Handler struct {
@@ -16,6 +18,8 @@ func NewHandler(services *service.Service) *Handler {
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	ping := router.Group("/ping")
 	{
 		ping.GET("/", func(c *gin.Context) {})
@@ -23,10 +27,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	auth := router.Group("/auth")
 	{
-		auth.POST("/login", h.Login)
+		auth.POST("/login", h.SignUp)
 		auth.POST("/signIn", h.signIn)
-
-		auth.POST("/logout", h.Logout)
 
 	}
 	api := router.Group("/api", h.GetUserID)
